@@ -52,4 +52,5 @@ def handleMessage(client, receivedMessage):
         message = str(messageBody)
         responseMessage = conversationHandler.getResponse(str(fromAddress), message)
         conversationHandler.printConversations()
+        sendMessage(client, fromAddress, "-------")
         sendMessage(client, fromAddress, responseMessage)
