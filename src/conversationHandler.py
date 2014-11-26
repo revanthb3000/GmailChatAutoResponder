@@ -3,6 +3,7 @@ This guy stores all the conversations you're having right now and responds appro
 """
 from botResponses import *
 from jokesData import *
+from utilityFunctions import *
 import re
 
 global conversations 
@@ -61,6 +62,9 @@ def getResponse(fromAddress, newMessage):
             return BOT_OWNER_WHEARABOUTS + "\n" + BOT_ASK_FOR_RESPONSE
         elif(int(userMessageResponse)==2):
             return getRandomJoke() + "\n" + BOT_ASK_FOR_RESPONSE
+        elif(int(userMessageResponse)==3):
+            playAlert()
+            return BOT_ALERT_RESPONSE + "\n" + BOT_ASK_FOR_RESPONSE
         else:
             return BOT_INVALID_RESPONSE + "\n" + BOT_ASK_FOR_RESPONSE
     
