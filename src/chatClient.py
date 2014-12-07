@@ -45,7 +45,6 @@ def sendMessage(client, toAddress, messageString):
 You get a message and you want to do something with it ? This is the function for you !
 """
 def handleMessage(client, receivedMessage): 
-#     print receivedMessage
     fromAddress = receivedMessage.getFrom()
     messageBody = receivedMessage.getBody()
     if(messageBody!=None):
@@ -54,3 +53,5 @@ def handleMessage(client, receivedMessage):
         conversationHandler.printConversations()
         sendMessage(client, fromAddress, "-------")
         sendMessage(client, fromAddress, responseMessage)
+    else:
+        sendMessage(client, fromAddress, "I'm psychic !!!")
