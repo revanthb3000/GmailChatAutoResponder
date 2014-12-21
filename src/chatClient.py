@@ -51,8 +51,8 @@ def handleMessage(client, receivedMessage):
         message = str(messageBody)
         responseMessage = conversationHandler.getResponse(str(fromAddress), message)
         conversationHandler.printConversations()
-        sendMessage(client, fromAddress, "-------")
         sendMessage(client, fromAddress, responseMessage)
     else:
         #This means that we're getting some sort of messages from the user but they're not necessarily messages. Could be something like 'Person is typing'
+        print receivedMessage
         return

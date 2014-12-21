@@ -1,10 +1,11 @@
 """
 This guy stores all the conversations you're having right now and responds appropriately.
 """
-from botResponses import *
+from botResponsesAndStates import *
 from jokesData import *
 from utilityFunctions import *
 import re
+import utilityFunctions
 
 global conversations 
 
@@ -52,10 +53,10 @@ def getResponse(fromAddress, newMessage):
     global conversations
     addMessageToConversation(fromAddress, newMessage)
     userChat = conversations[fromAddress]
-    if(userChat["state"]==0): #Means that the user is still in state 0.
-        changeState(fromAddress, 1)
+    if(userChat["state"]==BOT_START_STATE): #Means that the user is still in state 0.
+        changeState(fromAddress, BOT_MAIN_MENU_STATE)
         return BOT_INTRO
-    else:#In some other state
+    elif(userChat["state"]==BOT_MAIN_MENU_STATE):
         userMessageResponse = re.sub("[^0-9]","",newMessage)
         userMessageResponse = "0" + userMessageResponse
         if(int(userMessageResponse)==1):
@@ -65,6 +66,32 @@ def getResponse(fromAddress, newMessage):
         elif(int(userMessageResponse)==3):
             playAlert()
             return BOT_ALERT_RESPONSE + "\n" + BOT_ASK_FOR_RESPONSE
+        elif(int(userMessageResponse)==4):
+            changeState(fromAddress, BOT_STORY_MODE_START_STATE)
+            return BOT_START_STORY + "\n" + utilityFunctions.getStoryNodeMessage(0)
         else:
             return BOT_INVALID_RESPONSE + "\n" + BOT_ASK_FOR_RESPONSE
-    
+    elif(userChat["state"] in BOT_STORY_MODE_STATE_RANGE):
+        currentState = userChat["state"] - BOT_STORY_MODE_START_STATE #Getting rid of the offset
+        
+        userMessageResponse = re.sub("[^0-9]","",newMessage)
+        userMessageResponse = int("0" + userMessageResponse)
+        
+        newState = 0
+        if(userMessageResponse==1):
+            newState = getNextState(currentState, 1)
+        elif(userMessageResponse==2):
+            newState = getNextState(currentState, 2)
+        else:
+            return BOT_INVALID_RESPONSE + "\n" + BOT_ASK_FOR_RESPONSE
+        
+        replyMessage = utilityFunctions.getStoryNodeMessage(newState)
+        if(utilityFunctions.isEndState(newState)):
+            #If we're gonna be going to an end state, then we might as well be going to the main menu.
+            newState = BOT_START_STATE
+        else:
+            newState += BOT_STORY_MODE_START_STATE
+        
+        changeState(fromAddress, newState)
+        
+        return replyMessage
