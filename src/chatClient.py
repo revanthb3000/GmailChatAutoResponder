@@ -54,4 +54,5 @@ def handleMessage(client, receivedMessage):
         sendMessage(client, fromAddress, "-------")
         sendMessage(client, fromAddress, responseMessage)
     else:
-        sendMessage(client, fromAddress, "I'm psychic !!!")
+        #This means that we're getting some sort of messages from the user but they're not necessarily messages. Could be something like 'Person is typing'
+        return
